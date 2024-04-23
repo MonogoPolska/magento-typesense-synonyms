@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="monogo_typesensesynonyms_synonym_save_after">
+        <observer name="Monogo_TypesenseSynonyms::synchronizeSynonymEntity"
+                  instance="Monogo\TypesenseSynonyms\Observer\Synonym\Synchronize"/>
+    </event>
+</config>

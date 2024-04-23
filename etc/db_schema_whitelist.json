@@ -1,0 +1,19 @@
+{
+    "typesense_synonym": {
+        "column": {
+            "id": true,
+            "external_id": true,
+            "type": true,
+            "root_phrase": true,
+            "synonyms_list": true,
+            "locale": true,
+            "collection_alias": true,
+            "indexed_symbols": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}

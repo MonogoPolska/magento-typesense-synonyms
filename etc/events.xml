@@ -1,0 +1,8 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="typesense_after_flush">
+        <observer name="TypesenseSynonyms::flushSynonyms" instance="Monogo\TypesenseSynonyms\Observer\HandleFlush"/>
+    </event>
+    <event name="typesense_core_after_add_alias">
+        <observer name="TypesenseSynonyms::assignSynonymsToCollectionAlias" instance="Monogo\TypesenseSynonyms\Observer\HandleSynonymsToCollectionRelation"/>
+    </event>
+</config>
