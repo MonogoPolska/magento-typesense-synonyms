@@ -7,7 +7,7 @@
         <column xsi:type="text" name="root_phrase" nullable="true" comment="Synonym root phrase"/>
         <column xsi:type="text" name="synonyms_list" nullable="false" comment="Synonyms list"/>
         <column xsi:type="text" name="locale" nullable="true" comment="Synonym locale"/>
-        <column xsi:type="text" name="collection_alias" nullable="false" comment="Synonym parent collection"/>
+        <column xsi:type="text" name="assigned_collection" nullable="false" comment="Synonym parent collection"/>
         <column xsi:type="text" name="indexed_symbols" nullable="true" comment="Synonym special characters included in the index"/>
         <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
         <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="true" default="CURRENT_TIMESTAMP" comment="Updated At"/>

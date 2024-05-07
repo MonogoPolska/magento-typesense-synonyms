@@ -72,7 +72,7 @@
                 </select>
             </formElements>
         </field>
-        <field name="collection_alias" formElement="select" sortOrder="12">
+        <field name="assigned_collection" formElement="select" sortOrder="12">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
                     <item name="fit" xsi:type="boolean">true</item>
@@ -80,7 +80,7 @@
             </argument>
             <settings>
                 <dataType>text</dataType>
-                <dataScope>collection_alias</dataScope>
+                <dataScope>assigned_collection</dataScope>
                 <label translate="true">Parent collection</label>
                 <tooltip>
                     <description translate="true">Collections are shown by their aliases.</description>

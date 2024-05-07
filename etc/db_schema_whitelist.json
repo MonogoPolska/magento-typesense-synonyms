@@ -10,7 +10,8 @@
             "collection_alias": true,
             "indexed_symbols": true,
             "created_at": true,
-            "updated_at": true
+            "updated_at": true,
+            "assigned_collection": true
         },
         "constraint": {
             "PRIMARY": true
