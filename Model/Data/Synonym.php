@@ -107,7 +107,7 @@ class Synonym extends DataObject implements SynonymInterface
     /**
      * @inheritDoc
      */
-    public function getSynonymsList(): array
+    public function getSynonymsList(): string
     {
         return $this->_getData(SynonymInterface::FIELD_SYNONYMS_LIST);
     }
@@ -115,7 +115,7 @@ class Synonym extends DataObject implements SynonymInterface
     /**
      * @inheritDoc
      */
-    public function setSynonymsList(array $list): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
+    public function setSynonymsList(string $list): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
     {
         $this->setData(SynonymInterface::FIELD_SYNONYMS_LIST, $list);
         return $this;
@@ -126,7 +126,7 @@ class Synonym extends DataObject implements SynonymInterface
      */
     public function getAssignedCollection(): string
     {
-        return (string)$this->_getData(SynonymInterface::FIELD_COLLECTION_ALIAS);
+        return (string)$this->_getData(SynonymInterface::FIELD_ASSIGNED_COLLECTION);
     }
 
     /**
@@ -134,24 +134,24 @@ class Synonym extends DataObject implements SynonymInterface
      */
     public function setAssignedCollection(string $collectionAlias): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
     {
-        $this->setData(SynonymInterface::FIELD_COLLECTION_ALIAS, $collectionAlias);
+        $this->setData(SynonymInterface::FIELD_ASSIGNED_COLLECTION, $collectionAlias);
         return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function getIndexedSymbols(): array
+    public function getIndexedSymbols(): string
     {
-        return $this->_getData(SynonymInterface::FIELD_INDEXED_SYMBOLS);
+        return (string)$this->_getData(SynonymInterface::FIELD_INDEXED_SYMBOLS);
     }
 
     /**
      * @inheritDoc
      */
-    public function setIndexedSymbols(array $symbolsList): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
+    public function setIndexedSymbols(?string $symbolList): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
     {
-        $this->setData(SynonymInterface::FIELD_INDEXED_SYMBOLS, $symbolsList);
+        $this->setData(SynonymInterface::FIELD_INDEXED_SYMBOLS, $symbolList);
         return $this;
     }
 

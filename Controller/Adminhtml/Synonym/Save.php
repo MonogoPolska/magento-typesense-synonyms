@@ -31,6 +31,7 @@ class Save extends Action
      * @param Context                     $context
      * @param DataPersistorInterfaceAlias $dataPersistor
      * @param SynonymRepositoryInterface  $synonymRepository
+     * @param SynonymInterfaceFactory     $synonymFactory
      */
     public function __construct(
         Context                     $context,
@@ -74,14 +75,14 @@ class Save extends Action
 
         unset($data['form_key']);
         $synonymDto->setData($data);
-        $synonymDto->setData(
-            SynonymInterface::FIELD_SYNONYMS_LIST,
-            explode(',', $data[SynonymInterface::FIELD_SYNONYMS_LIST])
-        );
-        $synonymDto->setData(
-            SynonymInterface::FIELD_INDEXED_SYMBOLS,
-            explode(',', $data[SynonymInterface::FIELD_INDEXED_SYMBOLS])
-        );
+//        $synonymDto->setData(
+//            SynonymInterface::FIELD_SYNONYMS_LIST,
+//            explode(',', $data[SynonymInterface::FIELD_SYNONYMS_LIST])
+//        );
+//        $synonymDto->setData(
+//            SynonymInterface::FIELD_INDEXED_SYMBOLS,
+//            (string)$data[SynonymInterface::FIELD_INDEXED_SYMBOLS]
+//        );
 
         try {
             $persistedEntity = $this->synonymRepository->save($synonymDto);

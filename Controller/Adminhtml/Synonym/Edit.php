@@ -9,6 +9,7 @@ use Magento\Backend\Model\View\Result\Page;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Result\PageFactory;
+use Monogo\TypesenseSynonyms\Api\Data\SynonymInterfaceFactory;
 use Monogo\TypesenseSynonyms\Api\SynonymRepositoryInterface;
 use Monogo\TypesenseSynonyms\Controller\Adminhtml\Synonym;
 
@@ -21,23 +22,27 @@ class Edit extends Synonym
     private PageFactory $resultPageFactory;
 
     private SynonymRepositoryInterface $synonymRepository;
+    private SynonymInterfaceFactory $synonymFactory;
 
     /**
      * @param Context                    $context
      * @param Registry                   $coreRegistry
      * @param PageFactory                $resultPageFactory
      * @param SynonymRepositoryInterface $synonymRepository
+     * @param SynonymInterfaceFactory    $synonymFactory
      */
     public function __construct(
-        Context          $context,
-        Registry         $coreRegistry,
+        Context $context,
+        Registry $coreRegistry,
         PageFactory $resultPageFactory,
-        SynonymRepositoryInterface $synonymRepository
+        SynonymRepositoryInterface $synonymRepository,
+        SynonymInterfaceFactory $synonymFactory
     ) {
         parent::__construct($context, $coreRegistry);
 
         $this->resultPageFactory = $resultPageFactory;
         $this->synonymRepository = $synonymRepository;
+        $this->synonymFactory    = $synonymFactory;
     }
 
     /**
@@ -54,6 +59,8 @@ class Edit extends Synonym
                 $this->messageManager->addErrorMessage($e->getMessage());
                 return $this->resultRedirectFactory->create()->setPath('*/*/');
             }
+        } else {
+            $synonym = $this->synonymFactory->create();
         }
 
         $this->coreRegistry->register('typesense_synonyms_synonym', $synonym);

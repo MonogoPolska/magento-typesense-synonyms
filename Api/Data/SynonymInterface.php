@@ -15,9 +15,9 @@ interface SynonymInterface
     const FIELD_TYPE             = 'type';
     const FIELD_SYNONYMS_LIST    = 'synonyms_list';
     const FIELD_ROOT_PHRASE      = 'root_phrase';
-    const FIELD_LOCALE           = 'locale';
-    const FIELD_COLLECTION_ALIAS = 'collection_alias';
-    const FIELD_INDEXED_SYMBOLS  = 'indexed_symbols';
+    const FIELD_LOCALE              = 'locale';
+    const FIELD_ASSIGNED_COLLECTION = 'assigned_collection';
+    const FIELD_INDEXED_SYMBOLS     = 'indexed_symbols';
     const FIELD_CREATED_AT       = 'created_at';
     const FIELD_UPDATED_AT       = 'updated_at';
 
@@ -85,16 +85,16 @@ interface SynonymInterface
     public function setLocale(?string $localeCode = ''): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 
     /**
-     * @return string[]
+     * @return string
      */
-    public function getSynonymsList(): array;
+    public function getSynonymsList(): string;
 
     /**
-     * @param string[] $list
+     * @param string $list
      *
      * @return SynonymInterface
      */
-    public function setSynonymsList(array $list): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
+    public function setSynonymsList(string $list): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 
     /**
      * @return string
@@ -109,16 +109,16 @@ interface SynonymInterface
     public function setAssignedCollection(string $collectionAlias): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 
     /**
-     * @return string[]
+     * @return string
      */
-    public function getIndexedSymbols(): array;
+    public function getIndexedSymbols(): string;
 
     /**
-     * @param string[] $symbolList
+     * @param string $symbolList
      *
      * @return SynonymInterface
      */
-    public function setIndexedSymbols(array $symbolList): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
+    public function setIndexedSymbols(?string $symbolList): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 
     /**
      * @return string

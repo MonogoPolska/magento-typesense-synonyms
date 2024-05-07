@@ -69,7 +69,6 @@ class SynonymManagement
         return $numberOfRemovedEntities;
     }
 
-
     /**
      * @param string $targetCollectionAlias
      *
@@ -80,14 +79,14 @@ class SynonymManagement
     {
         $synonymsToReassign = $this->synonymRepository->getList(
             $this->searchCriteriaBuilder->addFilter(
-                SynonymInterface::FIELD_COLLECTION_ALIAS,
+                SynonymInterface::FIELD_ASSIGNED_COLLECTION,
                 $targetCollectionAlias
             )->create()
         );
 
         foreach ($synonymsToReassign->getItems() as $item) {
-            /** @var SynonymInterface $item */
-            $this->synonymService->upsert($item->getData());
+            /** @var Synonym $item */
+            $this->synonymService->upsert($item->getDataModel());
         }
 
         return $synonymsToReassign->getItems();

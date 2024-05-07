@@ -14,6 +14,7 @@ use Monogo\TypesenseCore\Adapter\Client;
 use Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 use Monogo\TypesenseSynonyms\Exception\SearchEngine\OperationFailedException;
 use Typesense\Alias;
+use voku\helper\DomParserInterface;
 
 /**
  * Class SynonymService
@@ -36,6 +37,10 @@ class SynonymService
      */
     private function getIndexNameByAlias(string $alias): ?string
     {
+        if (empty($alias)) {
+            throw new OperationFailedException('Alias is empty');
+        }
+
         try {
             /** @var Alias $alias */
             $collectionAlias = $this->typesenseConfigurator->getClient()->getAliases()[$alias]->retrieve();
@@ -60,10 +65,17 @@ class SynonymService
     private function mapToArray(SynonymInterface $synonymEntity): array
     {
         $synonymData = [
-            'locale'           => $synonymEntity->getLocale(),
-            'synonyms'         => $synonymEntity->getSynonymsList(),
-            'symbols_to_index' => $synonymEntity->getIndexedSymbols()
+            'locale'   => $synonymEntity->getLocale(),
+            'synonyms' => explode(',', $synonymEntity->getSynonymsList())
         ];
+
+//        var_dump($synonymEntity->getIndexedSymbols());
+//        var_dump(!empty($synonymEntity->getIndexedSymbols()));
+//        die;
+
+        if (!empty($synonymEntity->getIndexedSymbols())) {
+            $synonymData['symbols_to_index'] = explode(',', $synonymEntity->getIndexedSymbols());
+        }
 
         if ($synonymEntity->getType() == SynonymInterface::TYPE_ONE_WAY) {
             $synonymData['root'] = $synonymEntity->getRootPhrase();
