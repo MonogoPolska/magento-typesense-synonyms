@@ -1,0 +1,164 @@
+<?xml version="1.0" ?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">search_synonym_item_form.form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">General Attributes</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="back" class="Monogo\TypesenseSynonyms\Block\Adminhtml\Synonym\Edit\BackButton"/>
+            <button name="delete"
+                    class="Monogo\TypesenseSynonyms\Block\Adminhtml\Synonym\Edit\DeleteButton"/>
+            <button name="save" class="Monogo\TypesenseSynonyms\Block\Adminhtml\Synonym\Edit\SaveButton"/>
+            <button name="save_and_continue"
+                    class="Monogo\TypesenseSynonyms\Block\Adminhtml\Synonym\Edit\SaveAndContinueButton"/>
+        </buttons>
+        <namespace>search_synonym_item_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>search_synonym_item_form.form_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="*/*/save"/>
+        </settings>
+        <dataProvider name="form_data_source" class="Monogo\TypesenseSynonyms\Ui\DataProvider\SynonymForm">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <fieldset name="general">
+        <settings>
+            <label>General</label>
+        </settings>
+        <field name="external_id" formElement="input" sortOrder="10">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">External ID</label>
+                <dataScope>external_id</dataScope>
+                <tooltip>
+                    <description translate="true">Synonym external ID makes it easier to identify synonym setup in search engine.</description>
+                </tooltip>
+            </settings>
+        </field>
+        <field name="type" formElement="select" sortOrder="11">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="fit" xsi:type="boolean">true</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <dataScope>type</dataScope>
+                <label translate="true">Type</label>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Monogo\TypesenseSynonyms\Model\Synonym\TypeList"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="assigned_collection" formElement="select" sortOrder="12">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="fit" xsi:type="boolean">true</item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <dataScope>assigned_collection</dataScope>
+                <label translate="true">Parent collection</label>
+                <tooltip>
+                    <description translate="true">Collections are shown by their aliases.</description>
+                </tooltip>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Monogo\TypesenseSynonyms\Model\Synonym\SearchCollectionAliasList"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="synonyms_list" formElement="input" sortOrder="20">
+            <settings>
+                <dataType>array</dataType>
+                <label translate="true">Synonyms list</label>
+                <dataScope>synonyms_list</dataScope>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <tooltip>
+                    <description translate="true">Array of words that should be considered as synonyms (separated by comma).</description>
+                </tooltip>
+            </settings>
+        </field>
+        <field name="root_phrase" formElement="input" sortOrder="14">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="switcherConfig" xsi:type="array">
+                        <item name="enabled" xsi:type="boolean">true</item>
+                        <item name="rules" xsi:type="array">
+                            <item name="0" xsi:type="array">
+                                <item name="value" xsi:type="number">0</item>
+                                <item name="actions" xsi:type="array">
+                                    <item name="0" xsi:type="array">
+                                        <item name="target" xsi:type="string">search_synonym_item_form.search_synonym_item_form.general.type</item>
+                                        <item name="callback" xsi:type="string">visible</item>
+                                        <item name="params" xsi:type="array">
+                                            <item name="1" xsi:type="boolean">true</item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                            <item name="1" xsi:type="array">
+                                <item name="value" xsi:type="number">1</item>
+                                <item name="actions" xsi:type="array">
+                                    <item name="0" xsi:type="array">
+                                        <item name="target" xsi:type="string">search_synonym_item_form.search_synonym_item_form.general.type</item>
+                                        <item name="callback" xsi:type="string">visible</item>
+                                        <item name="params" xsi:type="array">
+                                            <item name="2" xsi:type="boolean">false</item>
+                                        </item>
+                                    </item>
+                                </item>
+                            </item>
+                        </item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Root phrase</label>
+                <dataScope>root_phrase</dataScope>
+                <tooltip>
+                    <description translate="true">For 1-way synonyms, indicates the root word that words in the synonyms parameter map to.</description>
+                </tooltip>
+            </settings>
+        </field>
+        <field name="indexed_symbols" formElement="input" sortOrder="30">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Indexed symbols</label>
+                <dataScope>indexed_symbols</dataScope>
+                <tooltip>
+                    <description translate="true">By default, special characters are dropped from synonyms. Use this attribute to specify which special characters should be indexed as is.</description>
+                </tooltip>
+            </settings>
+        </field>
+    </fieldset>
+</form>

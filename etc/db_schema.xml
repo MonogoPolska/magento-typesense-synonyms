@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="typesense_synonym" resource="default" engine="innodb" comment="Synonyms definition table">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
+        <column xsi:type="text" name="external_id" nullable="false" comment="Synonym ID in the TypeSense engine"/>
+        <column xsi:type="text" name="type" nullable="false" comment="Synonym type"/>
+        <column xsi:type="text" name="root_phrase" nullable="true" comment="Synonym root phrase"/>
+        <column xsi:type="text" name="synonyms_list" nullable="false" comment="Synonyms list"/>
+        <column xsi:type="text" name="locale" nullable="true" comment="Synonym locale"/>
+        <column xsi:type="text" name="assigned_collection" nullable="false" comment="Synonym parent collection"/>
+        <column xsi:type="text" name="indexed_symbols" nullable="true" comment="Synonym special characters included in the index"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="true" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+</schema>
