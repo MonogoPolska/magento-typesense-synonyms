@@ -13,8 +13,6 @@ namespace Monogo\TypesenseSynonyms\Services\Api;
 use Monogo\TypesenseCore\Adapter\Client;
 use Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 use Monogo\TypesenseSynonyms\Exception\SearchEngine\OperationFailedException;
-use Typesense\Alias;
-use voku\helper\DomParserInterface;
 
 /**
  * Class SynonymService
@@ -92,14 +90,22 @@ class SynonymService
     public function upsert(SynonymInterface $synonym): array
     {
         $synonymData = $this->mapToArray($synonym);
+        $synonymData['id'] = $synonym->getExternalId();
 
         $assignedCollectionName = $this->getIndexNameByAlias($synonym->getAssignedCollection());
+        $synonymSetName = $assignedCollectionName . '_synonyms_index';
 
         try {
             $typesenseClient = $this->typesenseConfigurator->getClient();
-            $synonymsSet = $typesenseClient->getCollections()[$assignedCollectionName]->getSynonyms();
 
-            $persistedSynonymData = $synonymsSet->upsert($synonym->getExternalId(), $synonymData);
+            $currentItems = $this->getSynonymSetItems($typesenseClient, $synonymSetName);
+            $currentItems = $this->upsertItemInArray($currentItems, $synonymData);
+
+            $persistedSynonymData = $typesenseClient->getSynonymSets()->upsert(
+                $synonymSetName,
+                ['items' => $currentItems]
+            );
+            $this->ensureSynonymSetLinked($typesenseClient, $assignedCollectionName, $synonymSetName);
         } catch (\Throwable $e) {
             throw new OperationFailedException(
                 $e->getMessage()
@@ -119,15 +125,66 @@ class SynonymService
      */
     public function delete(SynonymInterface $synonym): string
     {
+        $assignedCollectionName = $this->getIndexNameByAlias($synonym->getAssignedCollection());
+        $synonymSetName = $assignedCollectionName . '_synonyms_index';
+
         try {
             $typesenseClient = $this->typesenseConfigurator->getClient();
-            $synonymsSet = $typesenseClient->getCollections()[$synonym->getAssignedCollection()]->getSynonyms();
 
-            return $synonymsSet[$synonym->getExternalId()]->delete()['id'];
+            $currentItems = $this->getSynonymSetItems($typesenseClient, $synonymSetName);
+            $currentItems = array_values(array_filter(
+                $currentItems,
+                fn($item) => ($item['id'] ?? '') !== $synonym->getExternalId()
+            ));
+
+            $typesenseClient->getSynonymSets()->upsert(
+                $synonymSetName,
+                ['items' => $currentItems]
+            );
+
+            return $synonym->getExternalId();
         } catch (\Throwable $e) {
             throw new OperationFailedException(
                 $e->getMessage()
             );
+        }
+    }
+
+    private function getSynonymSetItems($typesenseClient, string $synonymSetName): array
+    {
+        try {
+            $set = $typesenseClient->getSynonymSets()[$synonymSetName]->retrieve();
+            return $set['items'] ?? [];
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+    private function upsertItemInArray(array $items, array $newItem): array
+    {
+        foreach ($items as $key => $item) {
+            if (($item['id'] ?? '') === $newItem['id']) {
+                $items[$key] = $newItem;
+                return $items;
+            }
+        }
+        $items[] = $newItem;
+        return $items;
+    }
+
+    private function ensureSynonymSetLinked($typesenseClient, string $collectionName, string $synonymSetName): void
+    {
+        try {
+            $collection = $typesenseClient->collections[$collectionName]->retrieve();
+            $linkedSets = $collection['synonym_sets'] ?? [];
+            if (!in_array($synonymSetName, $linkedSets)) {
+                $linkedSets[] = $synonymSetName;
+                $typesenseClient->collections[$collectionName]->update([
+                    'synonym_sets' => $linkedSets
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // Collection might not support linking yet
         }
     }
 }
