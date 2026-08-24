@@ -70,6 +70,40 @@ class SynonymManagement
     }
 
     /**
+     * Flushes all synonym sets from Typesense and all synonym records from the database.
+     *
+     * @param bool $orphanOnly When true, only orphaned synonym sets (not linked to any
+     *                         collection) are removed from Typesense; DB records are kept.
+     *
+     * @return array{sets: int, entities: int}
+     */
+    public function flushAll(bool $orphanOnly = false): array
+    {
+        $removedSets = $this->synonymService->deleteAllSynonymSets($orphanOnly);
+
+        $removedEntities = 0;
+        if (!$orphanOnly) {
+            $synonymCollection = $this->synonymRepository->getList();
+            foreach ($synonymCollection->getItems() as $synonymData) {
+                /** @var Synonym $synonymData */
+                try {
+                    $this->synonymRepository->deleteById((int)$synonymData->getId());
+                    $removedEntities++;
+                } catch (CouldNotDeleteException|NoSuchEntityException $e) {
+                    $this->errorLogger->error(
+                        sprintf(
+                            'Failed to remove synonym entity from database: %s',
+                            $e->getMessage()
+                        )
+                    );
+                }
+            }
+        }
+
+        return ['sets' => $removedSets, 'entities' => $removedEntities];
+    }
+
+    /**
      * @param string $targetCollectionAlias
      *
      * @return array
@@ -84,11 +118,16 @@ class SynonymManagement
             )->create()
         );
 
-        foreach ($synonymsToReassign->getItems() as $item) {
-            /** @var Synonym $item */
-            $this->synonymService->upsert($item->getDataModel());
+        $items = $synonymsToReassign->getItems();
+        if (!empty($items)) {
+            $dataModels = [];
+            foreach ($items as $item) {
+                /** @var Synonym $item */
+                $dataModels[] = $item->getDataModel();
+            }
+            $this->synonymService->batchUpsert($dataModels, $targetCollectionAlias);
         }
 
-        return $synonymsToReassign->getItems();
+        return $items;
     }
 }
