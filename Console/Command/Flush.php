@@ -34,13 +34,13 @@ class Flush extends Command
     protected function configure(): void
     {
         $this->setName('typesense:synonyms:flush');
-        $this->setDescription('Flush all synonyms and synonym sets from Typesense');
+        $this->setDescription('Flush all synonym sets from Typesense (Magento database is not affected)');
 
         $this->addOption(
             'orphan-only',
             null,
             InputOption::VALUE_NONE,
-            'Only remove orphaned synonym sets (not linked to any collection); database records are kept'
+            'Only remove orphaned synonym sets (not linked to any collection)'
         );
 
         parent::configure();
@@ -56,22 +56,18 @@ class Flush extends Command
         $orphanOnly = (bool)$input->getOption('orphan-only');
 
         try {
-            $result = $this->synonymManagement->flushAll($orphanOnly);
+            $removedSets = $this->synonymManagement->flushAll($orphanOnly);
         } catch (OperationFailedException $e) {
             $output->writeln('<error>' . $e->getMessage() . '</error>');
             return Cli::RETURN_FAILURE;
         }
 
-        if ($result['sets'] === 0 && $result['entities'] === 0) {
+        if ($removedSets === 0) {
             $output->writeln('Nothing to flush — all clean.');
             return Cli::RETURN_SUCCESS;
         }
 
-        $output->writeln(sprintf('Removed %d synonym set(s) from Typesense.', $result['sets']));
-
-        if (!$orphanOnly) {
-            $output->writeln(sprintf('Removed %d synonym entity(ies) from database.', $result['entities']));
-        }
+        $output->writeln(sprintf('Removed %d synonym set(s) from Typesense.', $removedSets));
 
         return Cli::RETURN_SUCCESS;
     }

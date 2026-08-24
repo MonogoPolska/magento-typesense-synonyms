@@ -70,37 +70,16 @@ class SynonymManagement
     }
 
     /**
-     * Flushes all synonym sets from Typesense and all synonym records from the database.
+     * Flushes synonym sets from Typesense only. Magento database records are never touched.
      *
      * @param bool $orphanOnly When true, only orphaned synonym sets (not linked to any
-     *                         collection) are removed from Typesense; DB records are kept.
+     *                         collection) are removed.
      *
-     * @return array{sets: int, entities: int}
+     * @return int Number of removed synonym sets.
      */
-    public function flushAll(bool $orphanOnly = false): array
+    public function flushAll(bool $orphanOnly = false): int
     {
-        $removedSets = $this->synonymService->deleteAllSynonymSets($orphanOnly);
-
-        $removedEntities = 0;
-        if (!$orphanOnly) {
-            $synonymCollection = $this->synonymRepository->getList();
-            foreach ($synonymCollection->getItems() as $synonymData) {
-                /** @var Synonym $synonymData */
-                try {
-                    $this->synonymRepository->deleteById((int)$synonymData->getId());
-                    $removedEntities++;
-                } catch (CouldNotDeleteException|NoSuchEntityException $e) {
-                    $this->errorLogger->error(
-                        sprintf(
-                            'Failed to remove synonym entity from database: %s',
-                            $e->getMessage()
-                        )
-                    );
-                }
-            }
-        }
-
-        return ['sets' => $removedSets, 'entities' => $removedEntities];
+        return $this->synonymService->deleteAllSynonymSets($orphanOnly);
     }
 
     /**
