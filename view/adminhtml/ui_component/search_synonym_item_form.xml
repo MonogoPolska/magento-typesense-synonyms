@@ -54,6 +54,16 @@
                 <dataScope>external_id</dataScope>
             </settings>
         </field>
+        <field name="name" formElement="input" sortOrder="9">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Name</label>
+                <dataScope>name</dataScope>
+                <tooltip>
+                    <description translate="true">Human-readable label for identifying this synonym in the admin panel. Not sent to the search engine.</description>
+                </tooltip>
+            </settings>
+        </field>
         <field name="type" formElement="select" sortOrder="11">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">

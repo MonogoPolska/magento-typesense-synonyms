@@ -56,6 +56,23 @@ class Synonym extends DataObject implements SynonymInterface
     /**
      * @inheritDoc
      */
+    public function getName(): string
+    {
+        return (string)$this->_getData(SynonymInterface::FIELD_NAME);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function setName(?string $name): SynonymInterface
+    {
+        $this->setData(SynonymInterface::FIELD_NAME, $name);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getType(): int
     {
         return (int)$this->_getData(SynonymInterface::FIELD_TYPE);

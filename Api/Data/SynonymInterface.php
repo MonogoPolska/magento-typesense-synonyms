@@ -12,6 +12,7 @@ interface SynonymInterface
 {
     const FIELD_ENTITY_ID  = 'id';
     const FIELD_EXTERNAL_ID      = 'external_id';
+    const FIELD_NAME              = 'name';
     const FIELD_TYPE             = 'type';
     const FIELD_SYNONYMS_LIST    = 'synonyms_list';
     const FIELD_ROOT_PHRASE      = 'root_phrase';
@@ -47,6 +48,18 @@ interface SynonymInterface
      * @return \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
      */
     public function setExternalId(string $externalId): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
+
+    /**
+     * @return string
+     */
+    public function getName(): string;
+
+    /**
+     * @param string|null $name
+     *
+     * @return \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
+     */
+    public function setName(?string $name): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 
     /**
      * @return int
