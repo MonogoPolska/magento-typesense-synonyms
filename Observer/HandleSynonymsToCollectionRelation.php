@@ -43,15 +43,17 @@ class HandleSynonymsToCollectionRelation implements ObserverInterface
     public function execute(Observer $observer)
     {
         $alias = $observer->getData('alias');
-        $collection = $observer->getData('collection');
 
         try {
             $this->synonymManagement->reassignCollection($alias);
         } catch (OperationFailedException $e) {
+            $this->errorLogger->error(
+                sprintf(
+                    'Failed to reassign synonyms to collection alias = %s: %s',
+                    $alias,
+                    $e->getMessage()
+                )
+            );
         }
-
-        $log = new \Monolog\Logger('custom', [new \Monolog\Handler\StreamHandler(BP.'/var/log/logger.log')]);
-        $log->info('Al: ' . $alias);
-        $log->info('Col: ' . $collection);
     }
 }
