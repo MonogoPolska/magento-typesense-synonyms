@@ -5,4 +5,8 @@
         <observer name="Monogo_TypesenseSynonyms::synchronizeSynonymEntity"
                   instance="Monogo\TypesenseSynonyms\Observer\Synonym\Synchronize"/>
     </event>
+    <event name="monogo_typesensesynonyms_synonym_delete_after">
+        <observer name="Monogo_TypesenseSynonyms::deleteSynonymEntity"
+                  instance="Monogo\TypesenseSynonyms\Observer\Synonym\Delete"/>
+    </event>
 </config>
