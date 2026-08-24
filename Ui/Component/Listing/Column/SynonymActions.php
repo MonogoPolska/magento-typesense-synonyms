@@ -68,7 +68,7 @@ class SynonymActions extends Column
                     'label' => __('Delete'),
                     'confirm' => [
                         'title' => __('Delete record'),
-                        'message' => __('Are you sure you want to delete a record #%1?', $item['external_id'])
+                        'message' => __('Are you sure you want to delete synonym "%1"?', $item['root_phrase'] ?: $item['synonyms_list'])
                     ]
                 ]
             ];

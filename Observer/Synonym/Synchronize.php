@@ -53,6 +53,10 @@ class Synchronize implements ObserverInterface
         /** @var Synonym $savedEntity */
         $savedEntity = $observer->getEvent()->getData('data_object');
 
+        if (empty($savedEntity->getData('external_id'))) {
+            return $this;
+        }
+
         try {
             $this->synonymService->upsert($savedEntity->getDataModel());
 
