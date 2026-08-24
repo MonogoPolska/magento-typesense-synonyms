@@ -75,14 +75,6 @@ class Save extends Action
 
         unset($data['form_key']);
         $synonymDto->setData($data);
-//        $synonymDto->setData(
-//            SynonymInterface::FIELD_SYNONYMS_LIST,
-//            explode(',', $data[SynonymInterface::FIELD_SYNONYMS_LIST])
-//        );
-//        $synonymDto->setData(
-//            SynonymInterface::FIELD_INDEXED_SYMBOLS,
-//            (string)$data[SynonymInterface::FIELD_INDEXED_SYMBOLS]
-//        );
 
         try {
             $persistedEntity = $this->synonymRepository->save($synonymDto);
