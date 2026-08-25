@@ -17,4 +17,12 @@
         </arguments>
     </type>
     <!-- endregion -->
+
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="typesense_synonyms_flush" xsi:type="object">Monogo\TypesenseSynonyms\Console\Command\Flush</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

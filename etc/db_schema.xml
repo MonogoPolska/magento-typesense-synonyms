@@ -3,6 +3,7 @@
     <table name="typesense_synonym" resource="default" engine="innodb" comment="Synonyms definition table">
         <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="Entity Id"/>
         <column xsi:type="text" name="external_id" nullable="false" comment="Synonym ID in the TypeSense engine"/>
+        <column xsi:type="varchar" name="name" length="255" nullable="true" comment="Human-readable synonym label (not indexed in Typesense)"/>
         <column xsi:type="text" name="type" nullable="false" comment="Synonym type"/>
         <column xsi:type="text" name="root_phrase" nullable="true" comment="Synonym root phrase"/>
         <column xsi:type="text" name="synonyms_list" nullable="false" comment="Synonyms list"/>

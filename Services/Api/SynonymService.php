@@ -67,10 +67,6 @@ class SynonymService
             'synonyms' => explode(',', $synonymEntity->getSynonymsList())
         ];
 
-//        var_dump($synonymEntity->getIndexedSymbols());
-//        var_dump(!empty($synonymEntity->getIndexedSymbols()));
-//        die;
-
         if (!empty($synonymEntity->getIndexedSymbols())) {
             $synonymData['symbols_to_index'] = explode(',', $synonymEntity->getIndexedSymbols());
         }
@@ -93,13 +89,60 @@ class SynonymService
         $synonymData['id'] = $synonym->getExternalId();
 
         $assignedCollectionName = $this->getIndexNameByAlias($synonym->getAssignedCollection());
-        $synonymSetName = $assignedCollectionName . '_synonyms_index';
+        $synonymSetName = $this->getSynonymSetName($synonym->getAssignedCollection());
 
         try {
             $typesenseClient = $this->typesenseConfigurator->getClient();
 
             $currentItems = $this->getSynonymSetItems($typesenseClient, $synonymSetName);
             $currentItems = $this->upsertItemInArray($currentItems, $synonymData);
+
+            $persistedSynonymData = $typesenseClient->getSynonymSets()->upsert(
+                $synonymSetName,
+                ['items' => $currentItems]
+            );
+            $this->ensureSynonymSetLinked($typesenseClient, $assignedCollectionName, $synonymSetName);
+        } catch (\Throwable $e) {
+            throw new OperationFailedException(
+                $e->getMessage()
+            );
+        }
+
+        return $persistedSynonymData;
+    }
+
+    /**
+     * Batch upserts multiple synonyms into a single synonym set in one request.
+     *
+     * @param SynonymInterface[] $synonyms
+     * @param string $collectionAlias
+     *
+     * @return array
+     * @throws OperationFailedException
+     */
+    public function batchUpsert(array $synonyms, string $collectionAlias): array
+    {
+        if (empty($synonyms)) {
+            return [];
+        }
+
+        $assignedCollectionName = $this->getIndexNameByAlias($collectionAlias);
+        $synonymSetName = $this->getSynonymSetName($collectionAlias);
+
+        $newItems = [];
+        foreach ($synonyms as $synonym) {
+            $synonymData = $this->mapToArray($synonym);
+            $synonymData['id'] = $synonym->getExternalId();
+            $newItems[] = $synonymData;
+        }
+
+        try {
+            $typesenseClient = $this->typesenseConfigurator->getClient();
+
+            $currentItems = $this->getSynonymSetItems($typesenseClient, $synonymSetName);
+            foreach ($newItems as $newItem) {
+                $currentItems = $this->upsertItemInArray($currentItems, $newItem);
+            }
 
             $persistedSynonymData = $typesenseClient->getSynonymSets()->upsert(
                 $synonymSetName,
@@ -126,7 +169,7 @@ class SynonymService
     public function delete(SynonymInterface $synonym): string
     {
         $assignedCollectionName = $this->getIndexNameByAlias($synonym->getAssignedCollection());
-        $synonymSetName = $assignedCollectionName . '_synonyms_index';
+        $synonymSetName = $this->getSynonymSetName($synonym->getAssignedCollection());
 
         try {
             $typesenseClient = $this->typesenseConfigurator->getClient();
@@ -170,6 +213,75 @@ class SynonymService
         }
         $items[] = $newItem;
         return $items;
+    }
+
+    private function getSynonymSetName(string $collectionAlias): string
+    {
+        return $collectionAlias . '_synonyms_index';
+    }
+
+    /**
+     * Deletes all synonym sets from Typesense. When $orphanOnly is true,
+     * only sets not linked to any collection are removed.
+     *
+     * @param bool $orphanOnly
+     *
+     * @return int Number of removed synonym sets.
+     * @throws OperationFailedException
+     */
+    public function deleteAllSynonymSets(bool $orphanOnly = false): int
+    {
+        try {
+            $typesenseClient = $this->typesenseConfigurator->getClient();
+
+            $linkedSets = [];
+            if ($orphanOnly) {
+                $linkedSets = $this->getLinkedSynonymSets($typesenseClient);
+            }
+
+            $allSets = $typesenseClient->getSynonymSets()->retrieve();
+            $setsToDelete = $allSets['synonym_sets'] ?? $allSets;
+
+            $removedCount = 0;
+            foreach ($setsToDelete as $set) {
+                $setName = $set['name'] ?? $set['id'] ?? null;
+                if ($setName === null) {
+                    continue;
+                }
+                if ($orphanOnly && in_array($setName, $linkedSets, true)) {
+                    continue;
+                }
+                $typesenseClient->getSynonymSets()[$setName]->delete();
+                $removedCount++;
+            }
+
+            return $removedCount;
+        } catch (\Throwable $e) {
+            throw new OperationFailedException($e->getMessage());
+        }
+    }
+
+    /**
+     * @param $typesenseClient
+     *
+     * @return string[]
+     */
+    private function getLinkedSynonymSets($typesenseClient): array
+    {
+        $linkedSets = [];
+        try {
+            $collections = $typesenseClient->getCollections()->retrieve();
+            foreach ($collections as $collection) {
+                $collectionData = $typesenseClient->collections[$collection['name']]->retrieve();
+                $sets = $collectionData['synonym_sets'] ?? [];
+                foreach ($sets as $setName) {
+                    $linkedSets[] = $setName;
+                }
+            }
+        } catch (\Throwable $e) {
+            // ignore
+        }
+        return $linkedSets;
     }
 
     private function ensureSynonymSetLinked($typesenseClient, string $collectionName, string $synonymSetName): void

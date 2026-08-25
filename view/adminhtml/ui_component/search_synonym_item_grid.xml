@@ -58,12 +58,12 @@
                 </item>
             </argument>
         </column>
-        <column name="external_id">
+        <column name="name">
             <argument name="data" xsi:type="array">
                 <item name="config" xsi:type="array">
-                    <item name="filter" xsi:type="string">textRange</item>
+                    <item name="filter" xsi:type="string">text</item>
                     <item name="sorting" xsi:type="string">asc</item>
-                    <item name="label" xsi:type="string" translate="true">External ID</item>
+                    <item name="label" xsi:type="string" translate="true">Name</item>
                 </item>
             </argument>
         </column>
@@ -73,6 +73,24 @@
                     <item name="filter" xsi:type="string">textRange</item>
                     <item name="sorting" xsi:type="string">asc</item>
                     <item name="label" xsi:type="string" translate="true">Collection</item>
+                </item>
+            </argument>
+        </column>
+        <column name="root_phrase">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="sorting" xsi:type="string">asc</item>
+                    <item name="label" xsi:type="string" translate="true">Root phrase</item>
+                </item>
+            </argument>
+        </column>
+        <column name="synonyms_list">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="filter" xsi:type="string">text</item>
+                    <item name="sorting" xsi:type="string">asc</item>
+                    <item name="label" xsi:type="string" translate="true">Synonyms list</item>
                 </item>
             </argument>
         </column>

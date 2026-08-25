@@ -3,6 +3,7 @@
         "column": {
             "id": true,
             "external_id": true,
+            "name": true,
             "type": true,
             "root_phrase": true,
             "synonyms_list": true,

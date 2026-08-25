@@ -44,12 +44,23 @@
             <label>General</label>
         </settings>
         <field name="external_id" formElement="input" sortOrder="10">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="visible" xsi:type="boolean">false</item>
+                </item>
+            </argument>
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">External ID</label>
                 <dataScope>external_id</dataScope>
+            </settings>
+        </field>
+        <field name="name" formElement="input" sortOrder="9">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Name</label>
+                <dataScope>name</dataScope>
                 <tooltip>
-                    <description translate="true">Synonym external ID makes it easier to identify synonym setup in search engine.</description>
+                    <description translate="true">Human-readable label for identifying this synonym in the admin panel. Not sent to the search engine.</description>
                 </tooltip>
             </settings>
         </field>

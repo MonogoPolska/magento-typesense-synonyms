@@ -11,8 +11,6 @@ declare(strict_types=1);
 namespace Monogo\TypesenseSynonyms\Model;
 
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Exception\CouldNotDeleteException;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 use Monogo\TypesenseSynonyms\Api\SynonymRepositoryInterface;
 use Monogo\TypesenseSynonyms\Exception\SearchEngine\OperationFailedException;
@@ -43,20 +41,22 @@ class SynonymManagement
     }
 
     /**
-     * @return int
+     * Removes all synonym items from Typesense synonym sets.
+     * Magento database records are never touched.
+     *
+     * @return int Number of processed synonym entities.
      */
     public function flush(): int
     {
         $synonymCollection = $this->synonymRepository->getList();
-        $numberOfRemovedEntities = 0;
+        $numberOfProcessedEntities = 0;
 
         foreach ($synonymCollection->getItems() as $synonymData) {
             /** @var Synonym $synonymData */
             try {
-                $this->synonymRepository->deleteById((int)$synonymData->getId());
                 $this->synonymService->delete($synonymData->getDataModel());
-                $numberOfRemovedEntities++;
-            } catch (OperationFailedException|CouldNotDeleteException|NoSuchEntityException $e) {
+                $numberOfProcessedEntities++;
+            } catch (OperationFailedException $e) {
                 $this->errorLogger->error(
                     sprintf(
                         'Failed to remove synonym in TS engine: %s',
@@ -66,7 +66,20 @@ class SynonymManagement
             }
         }
 
-        return $numberOfRemovedEntities;
+        return $numberOfProcessedEntities;
+    }
+
+    /**
+     * Flushes synonym sets from Typesense only. Magento database records are never touched.
+     *
+     * @param bool $orphanOnly When true, only orphaned synonym sets (not linked to any
+     *                         collection) are removed.
+     *
+     * @return int Number of removed synonym sets.
+     */
+    public function flushAll(bool $orphanOnly = false): int
+    {
+        return $this->synonymService->deleteAllSynonymSets($orphanOnly);
     }
 
     /**
@@ -84,11 +97,16 @@ class SynonymManagement
             )->create()
         );
 
-        foreach ($synonymsToReassign->getItems() as $item) {
-            /** @var Synonym $item */
-            $this->synonymService->upsert($item->getDataModel());
+        $items = $synonymsToReassign->getItems();
+        if (!empty($items)) {
+            $dataModels = [];
+            foreach ($items as $item) {
+                /** @var Synonym $item */
+                $dataModels[] = $item->getDataModel();
+            }
+            $this->synonymService->batchUpsert($dataModels, $targetCollectionAlias);
         }
 
-        return $synonymsToReassign->getItems();
+        return $items;
     }
 }

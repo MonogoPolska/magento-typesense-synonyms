@@ -94,12 +94,8 @@ class SynonymRepository implements SynonymRepositoryInterface
 
             $this->persistence->save($entityModel);
         } catch (AlreadyExistsException $e) {
-            $log = new \Monolog\Logger('custom', [new \Monolog\Handler\StreamHandler(BP.'/var/log/logger.log')]);
-            $log->info('Value: ' . $e->getMessage());
             throw new CouldNotSaveException(__('Failed to save entity: %1', $e->getMessage()));
         } catch (\Exception $e) {
-            $log = new \Monolog\Logger('custom', [new \Monolog\Handler\StreamHandler(BP.'/var/log/logger.log')]);
-            $log->info('Value: ' . $e->getMessage());
             throw new CouldNotSaveException(__($e->getMessage()));
         }
 

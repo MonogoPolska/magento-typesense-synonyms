@@ -74,18 +74,22 @@ class Save extends Action
         }
 
         unset($data['form_key']);
+        unset($data['external_id']);
         $synonymDto->setData($data);
-//        $synonymDto->setData(
-//            SynonymInterface::FIELD_SYNONYMS_LIST,
-//            explode(',', $data[SynonymInterface::FIELD_SYNONYMS_LIST])
-//        );
-//        $synonymDto->setData(
-//            SynonymInterface::FIELD_INDEXED_SYMBOLS,
-//            (string)$data[SynonymInterface::FIELD_INDEXED_SYMBOLS]
-//        );
 
         try {
             $persistedEntity = $this->synonymRepository->save($synonymDto);
+
+            if (!$id) {
+                $externalId = md5(
+                    $persistedEntity->getAssignedCollection() .
+                    $persistedEntity->getId() .
+                    time()
+                );
+                $persistedEntity->setExternalId($externalId);
+                $persistedEntity = $this->synonymRepository->save($persistedEntity);
+            }
+
             $this->messageManager->addSuccessMessage(__('Synonym have been saved.'));
             $this->dataPersistor->clear('typesense_synonyms_synonym');
 
