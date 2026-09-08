@@ -47,7 +47,7 @@ interface SynonymInterface
      *
      * @return \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
      */
-    public function setExternalId(string $externalId): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
+    public function setExternalId(?string $externalId): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 
     /**
      * @return string
@@ -83,7 +83,7 @@ interface SynonymInterface
      *
      * @return SynonymInterface
      */
-    public function setRootPhrase(string $phrase = ''): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
+    public function setRootPhrase(?string $phrase = ''): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 
     /**
      * @return string
@@ -107,7 +107,7 @@ interface SynonymInterface
      *
      * @return SynonymInterface
      */
-    public function setSynonymsList(string $list): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
+    public function setSynonymsList(?string $list): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 
     /**
      * @return string
@@ -119,7 +119,7 @@ interface SynonymInterface
      *
      * @return SynonymInterface
      */
-    public function setAssignedCollection(string $collectionAlias): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
+    public function setAssignedCollection(?string $collectionAlias): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface;
 
     /**
      * @return string
