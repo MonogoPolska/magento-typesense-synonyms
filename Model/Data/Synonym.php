@@ -47,9 +47,9 @@ class Synonym extends DataObject implements SynonymInterface
     /**
      * @inheritDoc
      */
-    public function setExternalId(string $externalId): SynonymInterface
+    public function setExternalId(?string $externalId): SynonymInterface
     {
-        $this->setData(SynonymInterface::FIELD_EXTERNAL_ID, $externalId);
+        $this->setData(SynonymInterface::FIELD_EXTERNAL_ID, $externalId ?? '');
         return $this;
     }
 
@@ -98,9 +98,9 @@ class Synonym extends DataObject implements SynonymInterface
     /**
      * @inheritDoc
      */
-    public function setRootPhrase(string $phrase = ''): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
+    public function setRootPhrase(?string $phrase = ''): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
     {
-        $this->setData(SynonymInterface::FIELD_ROOT_PHRASE, $phrase);
+        $this->setData(SynonymInterface::FIELD_ROOT_PHRASE, $phrase ?? '');
         return $this;
     }
 
@@ -126,15 +126,15 @@ class Synonym extends DataObject implements SynonymInterface
      */
     public function getSynonymsList(): string
     {
-        return $this->_getData(SynonymInterface::FIELD_SYNONYMS_LIST);
+        return (string)$this->_getData(SynonymInterface::FIELD_SYNONYMS_LIST);
     }
 
     /**
      * @inheritDoc
      */
-    public function setSynonymsList(string $list): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
+    public function setSynonymsList(?string $list): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
     {
-        $this->setData(SynonymInterface::FIELD_SYNONYMS_LIST, $list);
+        $this->setData(SynonymInterface::FIELD_SYNONYMS_LIST, $list ?? '');
         return $this;
     }
 
@@ -149,9 +149,9 @@ class Synonym extends DataObject implements SynonymInterface
     /**
      * @inheritDoc
      */
-    public function setAssignedCollection(string $collectionAlias): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
+    public function setAssignedCollection(?string $collectionAlias): \Monogo\TypesenseSynonyms\Api\Data\SynonymInterface
     {
-        $this->setData(SynonymInterface::FIELD_ASSIGNED_COLLECTION, $collectionAlias);
+        $this->setData(SynonymInterface::FIELD_ASSIGNED_COLLECTION, $collectionAlias ?? '');
         return $this;
     }
 
